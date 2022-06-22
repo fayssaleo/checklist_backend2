@@ -132,40 +132,40 @@ class EquipmentController extends Controller
     }
 
 
-    public function getEquipmentsByCounters($id){
-        $equipment=Equipment::find($id);
-        if(!$equipment){
-            return [
-                "payload" => "The searched row does not exist !",
-                "status" => "404_1"
-            ];
-        }
-        else {
+    public function getEquipmentsByCounters(){
+        $equipments=Equipment::all();
+
+        $counters=[];
+        for ($i=0;$i<count($equipments);$i++){
             $damagedCount=0;
             $confirmedCount=0;
             $closedCount=0;
-            $damages=$equipment->damages;
-                for ($k=0;$k<count($damages);$k++){
-                    if($damages[$k]->status=="on progress"){
-                        $damagedCount++;
-                    }
-                    if($damages[$k]->status=="confirmed"){
-                        $confirmedCount++;
-                    }
-                    if($damages[$k]->status=="closed"){
-                        $closedCount++;
-                    }
+            $damages=$equipments[$i]->damages;
+            for ($k=0;$k<count($damages);$k++){
+                if($damages[$k]->status=="on progress"){
+                    $damagedCount++;
+                }
+                if($damages[$k]->status=="confirmed"){
+                    $confirmedCount++;
+                }
+                if($damages[$k]->status=="closed"){
+                    $closedCount++;
                 }
             }
-            return [
-                "payload" => [
-                    "id" => $equipment->id,
-                    "damagedCount" => $damagedCount,
-                    "confirmedCount" => $confirmedCount,
-                    "closedCount" => $closedCount,
-                ],
-                "status" => "200_1"
-            ];
+            array_push($counters,[
+                "id" => $equipments[$i]->id,
+                "nameEquipment" => $equipments[$i]->name,
+                "damagedCount" => $damagedCount,
+                "confirmedCount" => $confirmedCount,
+                "closedCount" => $closedCount,
+            ]);
+        }
+
+
+        return [
+            "payload" => $counters,
+            "status" => "200_1"
+        ];
 
     }
 

@@ -36,70 +36,65 @@ class DamageController extends Controller
     }
     //declareDamage
     public function declareDamage(Request $request){
-        $validator = Validator::make($request->all(), [
-            "declaredBy_id" => "required",
-            "equipment_id" => "required",
-            "damage_type_id" => "required",
-        ]);
-        if ($validator->fails()) {
-            return [
-                "payload" => $validator->errors(),
-                "status" => "406_2"
-            ];
-        }
-        $declaredBy=User::find($request->declaredBy_id);
-        if(!$declaredBy){
-            return [
-                "payload"=>"user is not exist !",
-                "status"=>"user_404",
-            ];
+        $declaredDamages=[];
+        for ($i=0;$i<count($request->damages);$i++){
+            $declaredBy=User::find($request->damages[$i]["declaredBy_id"]);
+            if(!$declaredBy){
+                return [
+                    "payload"=>"user is not exist !",
+                    "status"=>"user_404",
+                ];
+            }
+
+            $damageType=DamageType::find($request->damages[$i]["damage_type_id"]);
+            if(!$damageType){
+                return [
+                    "payload"=>"damage type is not exist !",
+                    "status"=>"damage_type_404",
+                ];
+            }
+
+            $equipment=Equipment::find($request->damages[$i]["equipment_id"]);
+            if(!$equipment){
+                return [
+                    "payload"=>"equipment is not exist !",
+                    "status"=>"equipment_404",
+                ];
+            }
+            $existDamage=Damage::select()
+                ->where([
+                    ['damage_type_id', '=', $request->damages[$i]["damage_type_id"]],
+                    ['equipment_id', '=', $request->damages[$i]["equipment_id"]],
+                    ['status', '=', "confirmed"],
+                ])
+                ->orWhere([
+                    ['damage_type_id', '=', $request->damages[$i]["damage_type_id"]],
+                    ['equipment_id', '=', $request->damages[$i]["equipment_id"]],
+                    ['status', '=', "on progress"],
+                ])
+                ->first();
+            if($existDamage){
+                return [
+                    "payload"=>"The ".$damageType->name." damage is already ".$existDamage->status." !",
+                    "status"=>"400",
+                ];
+            }
+            $damage=Damage::make($request->damages[$i]);
+            $damage->declaredAt=Carbon::now();
+            $damage->save();
+            $damage->declaredBy=$damage->declaredBy()->with("fonction.department")->first();
+            $damage->confirmedBy=$damage->confirmedBy()->with("fonction.department")->first();
+            $damage->closedBy=$damage->closedBy()->with("fonction.department")->first();
+            $damage->revertedBy=$damage->revertedBy()->with("fonction.department")->first();
+            $damage->equipment=$damage->equipment()->with("profileGroup.department")->first();
+            $damage->damageType=$damage->damageType()->with("profileGroup.department")->with("department")->first();
+            $damage->photos=$damage->photos;
+            array_push($declaredDamages,$damage);
         }
 
-        $damageType=DamageType::find($request->damage_type_id);
-        if(!$damageType){
-            return [
-                "payload"=>"damage type is not exist !",
-                "status"=>"damage_type_404",
-            ];
-        }
 
-        $equipment=Equipment::find($request->equipment_id);
-        if(!$equipment){
-            return [
-                "payload"=>"equipment is not exist !",
-                "status"=>"equipment_404",
-            ];
-        }
-        $existDamage=Damage::select()
-            ->where([
-                ['damage_type_id', '=', $request->damage_type_id],
-                ['equipment_id', '=', $request->equipment_id],
-                ['status', '=', "confirmed"],
-            ])
-            ->orWhere([
-                ['damage_type_id', '=', $request->damage_type_id],
-                ['equipment_id', '=', $request->equipment_id],
-                ['status', '=', "on progress"],
-            ])
-            ->first();
-        if($existDamage){
-            return [
-                "payload"=>"This Damage is already on progress or confirmed !",
-                "status"=>"400",
-            ];
-        }
-        $damage=Damage::make($request->all());
-        $damage->declaredAt=Carbon::now();
-        $damage->save();
-        $damage->declaredBy=$damage->declaredBy()->with("fonction.department")->first();
-        $damage->confirmedBy=$damage->confirmedBy()->with("fonction.department")->first();
-        $damage->closedBy=$damage->closedBy()->with("fonction.department")->first();
-        $damage->revertedBy=$damage->revertedBy()->with("fonction.department")->first();
-        $damage->equipment=$damage->equipment()->with("profileGroup.department")->first();
-        $damage->damageType=$damage->damageType()->with("profileGroup.department")->with("department")->first();
-        $damage->photos=$damage->photos;
         return [
-            "payload" => $damage,
+            "payload" => $declaredDamages,
             "status" => "200"
         ];
     }

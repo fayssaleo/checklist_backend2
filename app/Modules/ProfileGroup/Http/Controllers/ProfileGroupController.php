@@ -213,45 +213,51 @@ class ProfileGroupController extends Controller
         }
     }
 
-    public function getProfileGroupsByCounters($id){
-        $profileGroup=ProfileGroup::find($id);
-        if(!$profileGroup){
-            return [
-                "payload" => "The searched row does not exist !",
-                "status" => "404_1"
-            ];
-        }
-        else {
-            $equipment=$profileGroup->equipments;
+    public function getProfileGroupsByCounters(){
+        $profileGroups=ProfileGroup::all();
+        $counters=[];
+
+        for ($i=0;$i<count($profileGroups);$i++){
+            $equipment=$profileGroups[$i]->equipments;
             $damagedCount=0;
             $confirmedCount=0;
             $closedCount=0;
-            for ($i=0;$i<count($equipment);$i++){
-                $damages=$equipment[$i]->damages;
-                for ($k=0;$k<count($damages);$k++){
-                    if($damages[$k]->status=="on progress"){
+            $functionalEquipmnet=0;
+            for ($k=0;$k<count($equipment);$k++){
+                $damages=$equipment[$k]->damages;
+                $ThisIsDamaged=false;
+                for ($j=0;$j<count($damages);$j++){
+                    if($damages[$j]->status=="on progress"){
                         $damagedCount++;
+                        $ThisIsDamaged=true;
                     }
-                    if($damages[$k]->status=="confirmed"){
+                    else if($damages[$j]->status=="confirmed"){
                         $confirmedCount++;
+                        $ThisIsDamaged=true;
                     }
-                    if($damages[$k]->status=="closed"){
+                    else if($damages[$j]->status=="closed"){
                         $closedCount++;
                     }
-
+                }
+                if(!$ThisIsDamaged){
+                    $functionalEquipmnet++;
                 }
             }
-            return [
-                "payload" => [
-                    "id" => $profileGroup->id,
-                    "equipmentsCount" => count($equipment),
-                    "damagedCount" => $damagedCount,
-                    "confirmedCount" => $confirmedCount,
-                    "closedCount" => $closedCount,
-                ],
-                "status" => "200_1"
-            ];
+            array_push($counters,[
+                "id" => $profileGroups[$i]->id,
+                "name" => $profileGroups[$i]->name,
+                "equipmentsCount" => count($equipment),
+                "functionalEquipmnet" => $functionalEquipmnet,
+                "damagedCount" => $damagedCount,
+                "confirmedCount" => $confirmedCount,
+                "closedCount" => $closedCount,
+            ]);
         }
+        return [
+            "payload" => $counters,
+            "status" => "200_1"
+        ];
+
     }
 
 
