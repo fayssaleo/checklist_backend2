@@ -132,8 +132,16 @@ class EquipmentController extends Controller
     }
 
 
-    public function getEquipmentsByCounters(){
-        $equipments=Equipment::all();
+    public function getEquipmentsByCounters($id){
+        $profileGroup=ProfileGroup::find($id);
+        if(!$profileGroup){
+            return [
+                "payload" => "The searched profiel group row does not exist !",
+                "status" => "404_4"
+            ];
+        }
+
+        $equipments=$profileGroup->equipments;
 
         $counters=[];
         for ($i=0;$i<count($equipments);$i++){
@@ -164,6 +172,47 @@ class EquipmentController extends Controller
 
         return [
             "payload" => $counters,
+            "status" => "200_1"
+        ];
+
+    }
+
+
+    public function getEquipmentsByCounter($id){
+        $equipment=Equipment::find($id);
+        if(!$equipment){
+            return [
+                "payload" => "The searched equipment row does not exist !",
+                "status" => "404_4"
+            ];
+        }
+
+            $damagedCount=0;
+            $confirmedCount=0;
+            $closedCount=0;
+            $damages=$equipment->damages;
+            for ($k=0;$k<count($damages);$k++){
+                if($damages[$k]->status=="on progress"){
+                    $damagedCount++;
+                }
+                if($damages[$k]->status=="confirmed"){
+                    $confirmedCount++;
+                }
+                if($damages[$k]->status=="closed"){
+                    $closedCount++;
+                }
+            }
+
+
+
+        return [
+            "payload" => [
+                "id" => $equipment->id,
+                "nameEquipment" => $equipment->name,
+                "damagedCount" => $damagedCount,
+                "confirmedCount" => $confirmedCount,
+                "closedCount" => $closedCount,
+            ],
             "status" => "200_1"
         ];
 

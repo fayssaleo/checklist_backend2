@@ -9,7 +9,8 @@ Route::group([
 
 ], function ($router) {
     Route::get('/', [EquipmentController::class, 'index']);
-    Route::get('/getEquipmentsByCounters', [EquipmentController::class, 'getEquipmentsByCounters']);
+    Route::get('/getEquipmentsByCounter/{id}', [EquipmentController::class, 'getEquipmentsByCounter']);
+    Route::get('/getEquipmentsByCounters/{id}', [EquipmentController::class, 'getEquipmentsByCounters']);
     Route::get('/{id}', [EquipmentController::class, 'get']);
     Route::post('/create', [EquipmentController::class, 'create']);
     Route::post('/update', [EquipmentController::class, 'update']);
