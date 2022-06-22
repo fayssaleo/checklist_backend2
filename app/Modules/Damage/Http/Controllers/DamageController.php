@@ -70,7 +70,18 @@ class DamageController extends Controller
                 "status"=>"equipment_404",
             ];
         }
-
+        $existDamage=Damage::select()
+            ->where('damage_type_id', $request->damage_type_id)
+            ->where('equipment_id', $request->equipment_id)
+            ->where('status', "on progress")
+            ->orWhere('status', "confirmed")
+            ->first();
+        if($existDamage){
+            return [
+                "payload"=>"This Damage is already on progress or confirmed !",
+                "status"=>"400",
+            ];
+        }
         $damage=Damage::make($request->all());
         $damage->declaredAt=Carbon::now();
         $damage->save();
@@ -417,6 +428,7 @@ class DamageController extends Controller
                     ->where('damage_type_id', $profileGroupDamageTypes[$i]->id)
                     ->where('equipment_id', $equipment->id)
                     ->where('status', "on progress")
+                    ->orWhere('status', "confirmed")
                     ->with("declaredBy.fonction.department")
                     ->with("confirmedBy.fonction.department")
                     ->with("closedBy.fonction.department")
@@ -424,7 +436,7 @@ class DamageController extends Controller
                     ->with("equipment.profileGroup.department")
                     ->with("damageType","damageType.profileGroup.department","damageType.department")
                     ->with("photos")
-                    ->first();
+                    ->get();
                 array_push($damaeTypeWithDamages,$profileGroupDamageTypes[$i]);
             }
             return [
