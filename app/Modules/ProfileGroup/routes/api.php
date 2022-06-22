@@ -10,6 +10,7 @@ Route::group([
 ], function ($router) {
     Route::get('/', [ProfileGroupController::class, 'index']);
     Route::get('/getProfileGroupsByCounters', [ProfileGroupController::class, 'getProfileGroupsByCounters']);
+    Route::get('/getProfileGroupsByCounter/{id}', [ProfileGroupController::class, 'getProfileGroupsByCounter']);
     Route::get('/{id}', [ProfileGroupController::class, 'get']);
     Route::get('/getProfileGroupUsers/{id}', [ProfileGroupController::class, 'getProfileGroupUsers']);
     Route::get('/getProfileGroupEquipments/{id}', [ProfileGroupController::class, 'getProfileGroupEquipments']);
@@ -17,6 +18,7 @@ Route::group([
     Route::post('/create', [ProfileGroupController::class, 'create']);
     Route::post('/update', [ProfileGroupController::class, 'update']);
     Route::post('/delete', [ProfileGroupController::class, 'delete']);
+    Route::post('/deleteUserFromProfileGroup', [ProfileGroupController::class, 'deleteUserFromProfileGroup']);
     Route::post('/addUserToProfileGroup', [ProfileGroupController::class, 'addUserToProfileGroup']);
 
 });

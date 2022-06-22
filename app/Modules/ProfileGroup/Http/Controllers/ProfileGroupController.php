@@ -131,6 +131,30 @@ class ProfileGroupController extends Controller
         }
     }
 
+    public function deleteUserFromProfileGroup(Request $request){
+        $profileGroup=ProfileGroup::find($request->profile_group_id);
+        if(!$profileGroup){
+            return [
+                "payload" => "The searched profiel group row does not exist !",
+                "status" => "404_4"
+            ];
+        }
+        $user=User::find($request->user_id);
+        if(!$user){
+            return [
+                "payload" => "The searched user row does not exist !",
+                "status" => "404_4"
+            ];
+        }
+
+            $profileGroup->users()->detach($user);
+            return [
+                "payload" => "Deleted successfully",
+                "status" => "200_4"
+            ];
+
+    }
+
     public function addUserToProfileGroup(Request $request){
         $validator = Validator::make($request->all(), [
             "user_id" => "required",
@@ -260,6 +284,57 @@ class ProfileGroupController extends Controller
 
     }
 
+    public function getProfileGroupsByCounter($id){
+        $profileGroup=ProfileGroup::find($id);
+        if(!$profileGroup){
+            return [
+                "payload" => "The searched row does not exist !",
+                "status" => "404_1"
+            ];
+        }
+        else {
+            $equipments=$profileGroup->equipments;
+            $damagedCount=0;
+            $confirmedCount=0;
+            $closedCount=0;
+            $functionalEquipmnet=0;
+            for ($k=0;$k<count($equipments);$k++){
+                $damages=$equipments[$k]->damages;
+                $ThisIsDamaged=false;
+                for ($j=0;$j<count($damages);$j++){
+                    if($damages[$j]->status=="on progress"){
+                        $damagedCount++;
+                        $ThisIsDamaged=true;
+                    }
+                    else if($damages[$j]->status=="confirmed"){
+                        $confirmedCount++;
+                        $ThisIsDamaged=true;
+                    }
+                    else if($damages[$j]->status=="closed"){
+                        $closedCount++;
+                    }
+                }
+                if(!$ThisIsDamaged){
+                    $functionalEquipmnet++;
+                }
+            }
+            return [
+                "payload" => [
+                    "id" => $profileGroup->id,
+                    "name" => $profileGroup->name,
+                    "equipmentsCount" => count($equipments),
+                    "functionalEquipmnet" => $functionalEquipmnet,
+                    "damagedCount" => $damagedCount,
+                    "confirmedCount" => $confirmedCount,
+                    "closedCount" => $closedCount,
+                ],
+                "status" => "200_1"
+            ];
+        }
+
+
+
+    }
 
 
 
