@@ -436,7 +436,7 @@ class DamageController extends Controller
                     ->with("equipment.profileGroup.department")
                     ->with("damageType","damageType.profileGroup.department","damageType.department")
                     ->with("photos")
-                    ->get();
+                    ->first();
                 array_push($damaeTypeWithDamages,$profileGroupDamageTypes[$i]);
             }
             return [
