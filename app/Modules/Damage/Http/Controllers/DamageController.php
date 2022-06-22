@@ -415,6 +415,7 @@ class DamageController extends Controller
             for ($i=0;$i<count($profileGroupDamageTypes);$i++){
                 $profileGroupDamageTypes[$i]->damage=Damage::select()
                     ->where('damage_type_id', $profileGroupDamageTypes[$i]->id)
+                    ->where('equipment_id', $equipment->id)
                     ->where('status', "on progress")
                     ->with("declaredBy.fonction.department")
                     ->with("confirmedBy.fonction.department")

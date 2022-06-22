@@ -213,4 +213,26 @@ class ProfileGroupController extends Controller
         }
     }
 
+    public function getProfileGroupsByCounters($id){
+        /*$profileGroup=ProfileGroup::select('collaborateurs.*', 'fonctions.libelle as fonction','fonctions.departement_id')
+            ->leftJoin('fonctions',"fonctions.id","=","collaborateurs.fonction_id")
+            ->leftJoin('departements',"departements.id","=","fonctions.departement_id")
+            ->get()
+        if(!$profileGroup){
+            return [
+                "payload" => "The searched row does not exist !",
+                "status" => "404_1"
+            ];
+        }
+        else {
+            return [
+                "payload" => $profileGroup->damageTypes()->with("department")->get(),
+                "status" => "200_1"
+            ];
+        }*/
+    }
+
+
+
+
 }
