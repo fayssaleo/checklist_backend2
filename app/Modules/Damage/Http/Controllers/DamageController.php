@@ -71,10 +71,16 @@ class DamageController extends Controller
             ];
         }
         $existDamage=Damage::select()
-            ->where('damage_type_id', $request->damage_type_id)
-            ->where('equipment_id', $request->equipment_id)
-            ->where('status', "on progress")
-            ->orWhere('status', "confirmed")
+            ->where([
+                ['damage_type_id', '=', $request->damage_type_id],
+                ['equipment_id', '=', $request->equipment_id],
+                ['status', '=', "confirmed"],
+            ])
+            ->orWhere([
+                ['damage_type_id', '=', $request->damage_type_id],
+                ['equipment_id', '=', $request->equipment_id],
+                ['status', '=', "on progress"],
+            ])
             ->first();
         if($existDamage){
             return [
@@ -425,10 +431,16 @@ class DamageController extends Controller
 
             for ($i=0;$i<count($profileGroupDamageTypes);$i++){
                 $profileGroupDamageTypes[$i]->damage=Damage::select()
-                    ->where('damage_type_id', $profileGroupDamageTypes[$i]->id)
-                    ->where('equipment_id', $equipment->id)
-                    ->where('status', "on progress")
-                    ->orWhere('status', "confirmed")
+                    ->where([
+                        ['damage_type_id', '=', $profileGroupDamageTypes[$i]->id],
+                        ['equipment_id', '=', $equipment->id],
+                        ['status', '=', "confirmed"],
+                    ])
+                    ->orWhere([
+                        ['damage_type_id', '=', $profileGroupDamageTypes[$i]->id],
+                        ['equipment_id', '=', $equipment->id],
+                        ['status', '=', "on progress"],
+                    ])
                     ->with("declaredBy.fonction.department")
                     ->with("confirmedBy.fonction.department")
                     ->with("closedBy.fonction.department")
