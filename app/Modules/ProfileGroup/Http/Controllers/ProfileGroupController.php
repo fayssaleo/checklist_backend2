@@ -214,10 +214,7 @@ class ProfileGroupController extends Controller
     }
 
     public function getProfileGroupsByCounters($id){
-        /*$profileGroup=ProfileGroup::select('collaborateurs.*', 'fonctions.libelle as fonction','fonctions.departement_id')
-            ->leftJoin('fonctions',"fonctions.id","=","collaborateurs.fonction_id")
-            ->leftJoin('departements',"departements.id","=","fonctions.departement_id")
-            ->get()
+        $profileGroup=ProfileGroup::find($id);
         if(!$profileGroup){
             return [
                 "payload" => "The searched row does not exist !",
@@ -225,11 +222,36 @@ class ProfileGroupController extends Controller
             ];
         }
         else {
+            $equipment=$profileGroup->equipments;
+            $damagedCount=0;
+            $confirmedCount=0;
+            $closedCount=0;
+            for ($i=0;$i<count($equipment);$i++){
+                $damages=$equipment[$i]->damages;
+                for ($k=0;$k<count($damages);$k++){
+                    if($damages[$k]->status=="on progress"){
+                        $damagedCount++;
+                    }
+                    if($damages[$k]->status=="confirmed"){
+                        $confirmedCount++;
+                    }
+                    if($damages[$k]->status=="closed"){
+                        $closedCount++;
+                    }
+
+                }
+            }
             return [
-                "payload" => $profileGroup->damageTypes()->with("department")->get(),
+                "payload" => [
+                    "id" => $profileGroup->id,
+                    "equipmentsCount" => count($equipment),
+                    "damagedCount" => $damagedCount,
+                    "confirmedCount" => $confirmedCount,
+                    "closedCount" => $closedCount,
+                ],
                 "status" => "200_1"
             ];
-        }*/
+        }
     }
 
 
