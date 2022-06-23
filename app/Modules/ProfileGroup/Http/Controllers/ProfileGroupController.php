@@ -270,6 +270,7 @@ class ProfileGroupController extends Controller
             array_push($counters,[
                 "id" => $profileGroups[$i]->id,
                 "name" => $profileGroups[$i]->name,
+                "department_id" => $profileGroups[$i]->department->id,
                 "equipmentsCount" => count($equipment),
                 "functionalEquipmnet" => $functionalEquipmnet,
                 "damagedCount" => $damagedCount,
