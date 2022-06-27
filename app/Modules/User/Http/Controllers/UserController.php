@@ -15,7 +15,9 @@ class UserController extends Controller
 
     public function index(){
 
-        $users=User::with('fonction.department')->get();
+        $users=User::with('fonction.department')
+            ->with('profileGroups')
+            ->get();
 
         return [
             "payload" => $users,
@@ -209,4 +211,5 @@ class UserController extends Controller
             "status" => "200"
         ];
     }
+
 }

@@ -81,6 +81,9 @@ class DamageController extends Controller
             }
             $damage=Damage::make($request->damages[$i]);
             $damage->declaredAt=Carbon::now();
+            $damage->shift=$request->shift;
+            $damage->driverIn=$request->driverIn;
+            $damage->driverOut=$request->driverOut;
             $damage->save();
             $damage->declaredBy=$damage->declaredBy()->with("fonction.department")->first();
             $damage->confirmedBy=$damage->confirmedBy()->with("fonction.department")->first();
@@ -133,10 +136,12 @@ class DamageController extends Controller
                 "payload"=>"damage is not on progress to be confirmed !",
                 "status"=>"damage_400",
             ];
+
         }
 
         $damage->status="confirmed";
         $damage->confirmedBy_id=$confirmedBy->id;
+        $damage->resolveDescription=$request->resolveDescription;
         $damage->confirmedAt=Carbon::now();
         $damage->save();
         $damage->declaredBy=$damage->declaredBy()->with("fonction.department")->first();
@@ -243,6 +248,7 @@ class DamageController extends Controller
         $damage->revertedBy_id=$revertedBy->id;
         $damage->revertedAt=Carbon::now();
         $damage->revertedTimes=++$damage->revertedTimes;
+        $damage->revertedDescription=$request->revertedDescription;
         $damage->save();
         $damage->declaredBy=$damage->declaredBy()->with("fonction.department")->first();
         $damage->confirmedBy=$damage->confirmedBy()->with("fonction.department")->first();
@@ -509,5 +515,31 @@ class DamageController extends Controller
             "status" => "200_1"
         ];
     }
+
+
+
+    public function delete(Request $request){
+        $damage=Damage::find($request->id);
+        if(!$damage){
+            return [
+                "payload" => "The searched row does not exist !",
+                "status" => "404_4"
+            ];
+        }
+        else {
+            if(!$damage->status=="confirmed"){
+                return [
+                    "payload" => "This damage cannot be removed the status is 'CONFIRMED' !",
+                    "status" => "400_4"
+                ];
+            }
+            $damage->delete();
+            return [
+                "payload" => "Deleted successfully",
+                "status" => "200_4"
+            ];
+        }
+    }
+
 
 }

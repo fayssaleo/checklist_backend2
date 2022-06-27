@@ -19,6 +19,10 @@ class CreateDamagesTable extends Migration
 
             $table->string("status")->default("on progress");
             $table->text("description")->nullable();
+            $table->text("resolveDescription")->nullable();
+            $table->string("shift")->nullable();
+            $table->string("driverIn")->nullable();
+            $table->string("driverOut")->nullable();
 
             $table->bigInteger('declaredBy_id')->unsigned()->nullable();
             $table->dateTime("declaredAt")->nullable();
@@ -34,6 +38,7 @@ class CreateDamagesTable extends Migration
 
             $table->bigInteger('revertedBy_id')->unsigned()->nullable();
             $table->dateTime("revertedAt")->nullable();
+            $table->text("revertedDescription")->nullable();
             $table->integer("revertedTimes")->default(0);
             $table->foreign('revertedBy_id')->references('id')->on('users')->onDelete('cascade');
 

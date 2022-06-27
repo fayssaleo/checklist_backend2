@@ -23,6 +23,7 @@ Route::group([
     Route::post('/revertDamage', [DamageController::class, 'revertDamage']);
     Route::post('/foremanIntervention', [DamageController::class, 'foremanIntervention']);
     Route::post('/sendDamagePhotosStoragePath', [DamageController::class, 'sendDamagePhotosStoragePath']);
+    Route::post('/delete', [DamageController::class, 'delete']);
 
 
 });
