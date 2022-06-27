@@ -54,4 +54,10 @@ class User extends Authenticatable
         return $this->hasMany(Damage::class,"revertedBy_id");
     }
 
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y H:i',
+        'updated_at' => 'datetime:d/m/Y H:i',
+
+    ];
+
 }

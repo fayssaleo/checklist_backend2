@@ -32,4 +32,10 @@ class ProfileGroup extends Model
         return $this->belongsTo(Department::class);
     }
 
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y H:i',
+        'updated_at' => 'datetime:d/m/Y H:i',
+
+    ];
+
 }

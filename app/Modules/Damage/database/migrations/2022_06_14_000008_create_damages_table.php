@@ -21,19 +21,19 @@ class CreateDamagesTable extends Migration
             $table->text("description")->nullable();
 
             $table->bigInteger('declaredBy_id')->unsigned()->nullable();
-            $table->date("declaredAt")->nullable();
+            $table->dateTime("declaredAt")->nullable();
             $table->foreign('declaredBy_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->bigInteger('confirmedBy_id')->unsigned()->nullable();
-            $table->date("confirmedAt")->nullable();
+            $table->dateTime("confirmedAt")->nullable();
             $table->foreign('confirmedBy_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->bigInteger('closedBy_id')->unsigned()->nullable();
-            $table->date("closedAt")->nullable();
+            $table->dateTime("closedAt")->nullable();
             $table->foreign('closedBy_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->bigInteger('revertedBy_id')->unsigned()->nullable();
-            $table->date("revertedAt")->nullable();
+            $table->dateTime("revertedAt")->nullable();
             $table->integer("revertedTimes")->default(0);
             $table->foreign('revertedBy_id')->references('id')->on('users')->onDelete('cascade');
 

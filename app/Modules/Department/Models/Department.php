@@ -27,5 +27,11 @@ class Department extends Model
         return $this->hasMany(ProfileGroup::class);
     }
 
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y H:i',
+        'updated_at' => 'datetime:d/m/Y H:i',
+
+    ];
+
 
 }

@@ -22,4 +22,11 @@ class Fonction extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y H:i',
+        'updated_at' => 'datetime:d/m/Y H:i',
+
+    ];
+
 }

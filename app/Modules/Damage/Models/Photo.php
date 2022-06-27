@@ -13,4 +13,11 @@ class Photo extends Model
     public function damage(){
         return $this->belongsTo(Damage::class);
     }
+
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y H:i',
+        'updated_at' => 'datetime:d/m/Y H:i',
+
+    ];
+
 }

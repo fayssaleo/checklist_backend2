@@ -24,4 +24,10 @@ class Equipment extends Model
         return $this->hasMany(Damage::class);
     }
 
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y H:i',
+        'updated_at' => 'datetime:d/m/Y H:i',
+
+    ];
+
 }

@@ -325,6 +325,7 @@ class ProfileGroupController extends Controller
                     "name" => $profileGroup->name,
                     "equipmentsCount" => count($equipments),
                     "functionalEquipmnet" => $functionalEquipmnet,
+                    "department_id" => $profileGroup->department->id,
                     "damagedCount" => $damagedCount,
                     "confirmedCount" => $confirmedCount,
                     "closedCount" => $closedCount,

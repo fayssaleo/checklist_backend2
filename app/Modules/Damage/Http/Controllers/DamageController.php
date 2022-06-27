@@ -444,6 +444,7 @@ class DamageController extends Controller
                     ->with("damageType","damageType.profileGroup.department","damageType.department")
                     ->with("photos")
                     ->first();
+                $profileGroupDamageTypes[$i]->department=$profileGroupDamageTypes[$i]->department;
                 array_push($damaeTypeWithDamages,$profileGroupDamageTypes[$i]);
             }
             return [
