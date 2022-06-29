@@ -182,9 +182,9 @@ class ProfileGroupController extends Controller
         }
 
         $profileGroup->users()->attach($user);
-
+        $user->profileGroups=$user->profileGroups;
         return [
-            "payload" => "The user has been added successfully",
+            "payload" => $user,
             "status" => "200"
         ];
     }

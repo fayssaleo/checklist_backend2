@@ -542,4 +542,9 @@ class DamageController extends Controller
     }
 
 
+    public function sendMail(){
+
+    }
+
+
 }
